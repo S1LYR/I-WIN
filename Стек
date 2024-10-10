@@ -1,0 +1,53 @@
+class users():
+    def __init__(self, a):
+        self.s = a
+    def m(self, c):
+        a = int(c[0])
+        b = int(c[1])
+        if a>b:
+            return b
+        elif a==b:
+            return a
+        else :
+            return a
+
+    def M(self, c):
+        a = int(c[0])
+        b = int(c[1])
+        if a < b:
+            return b
+        else:
+            return a
+    def enter(self, i, j):
+        h=0
+        while j < len(self.s):
+            if self.s[j]=="M":
+
+                a,f1,f2 = users.enter(self, 1, j+1)
+
+                self.s = self.s[0:f1-2]+list(str(a))+self.s[f2+1:]
+
+                if (''.join(self.s)).isdigit():
+                    return ''.join(self.s)
+            elif self.s[j]=="m":
+                a,f1,f2 = users.enter(self, 2, j+1)
+                self.s = self.s[0:f1-2]+list(str(a))+self.s[f2+1:]
+
+                if (''.join(self.s)).isdigit():
+                    return ''.join(self.s)
+            elif self.s[j]==')':
+                f1 = j - h + 1
+                f2 = j
+                if i == 1:
+                    return users.M(self,(''.join(self.s[f1:f2])).split(',')), f1, f2
+                else:
+
+                    return users.m(self,(''.join(self.s[f1:f2])).split(',')), f1, f2
+
+            j=j+1
+            h=h+1
+
+print("Введите строку")
+ent = list(str(input()))
+obj = users(ent)
+print(obj.enter(0, 0))
