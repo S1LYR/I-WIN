@@ -1,0 +1,109 @@
+од программы
+class Stack:
+#Реализация стека с помощью списка
+ def __init__(self):
+ self._items = []
+ def is_empty(self):
+#Проверка на пустоту стека
+ return len(self._items) == 0
+ def push(self, item):
+#Добавление элемента в стек
+ self._items.append(item)
+ def pop(self):
+#Извлечение и возвращение верхнего элемент стека
+ if self.is_empty():
+ raise Empty("Стек пуст")
+ return self._items.pop()
+ def peek(self):
+#Возвращение верхнего элемента стека, не извлекая его
+ if self.is_empty():
+ raise Empty("Стек пуст")
+ return self._items[-1]
+class Barge:
+#Класс для представления баржи с отсеками
+ def __init__(self, K, P):
+#Инициализация баржи
+#K - Количество отсеков
+#P - Максимальное количество бочек на барже
+ self.K = K
+ self.P = P
+ self.stacks = [Stack() for _ in range(K)] # Список стеков для 
+отсеков
+ self.max_count = 0 # Максимальное количество бочек на барже
+ self.current_count = 0 # Текущее количество бочек на барже
+ def load(self, A, B):
+12
+#Погружние бочки в указанный отсек
+#A - Номер отсека (индексация с 1)
+#B - Номер вида топлива
+ A -= 1
+ if self.current_count < self.P:
+ self.stacks[A].push(B)
+ self.current_count += 1
+ self.max_count = max(self.max_count, self.current_count)
+ else:
+ raise OverflowError("Превышено максимальное количество бочек")
+ def unload(self, A, B):
+#Выгружает бочку из указанного отсека
+#A: Номер отсека (индексация с 1)
+# B: Номер ожидаемого вида топлива
+ A -= 1
+ if not self.stacks[A].is_empty() and self.stacks[A].peek() == B:
+ self.stacks[A].pop()
+ self.current_count -= 1
+ else:
+ raise ValueError("Отсек пуст или неправильный вид топлива")
+ def is_empty(self):
+#Проверка на пустоту баржи
+ return self.current_count == 0
+class Empty(Exception):
+#Исключение для пустого стека
+ pass
+class OverflowError(Exception):
+#Исключение для переполнения баржи
+ pass
+def process_barge(N, K, P):
+#Обрабатка маршрута баржи и возвращение максимальное количество бочек 
+на ней
+#N - Количество доков
+#K - Количество отсеков
+13
+#P - Максимальное количество бочек на барже
+ barge = Barge(K, P)
+ try:
+ print("Введите через пробел следующие данные:")
+ print("Если совершается погрузка введите +, если совершается 
+разгрузка введите -; номер отсека; вид топлива")
+ for _ in range(N):
+ a, A, B = input().split()
+ A = int(A)
+ if A < 1 or A > K:
+ return "Error"
+ B = int(B)
+ if a == "+":
+ barge.load(A, B)
+ elif a == "-":
+ barge.unload(A, B)
+ else:
+ raise ValueError("Неверное действие")
+ if not barge.is_empty():
+ return "Error"
+ return barge.max_count
+ except (ValueError, OverflowError, Empty) as e:
+ return "Error"
+# Считываем входные данные
+print("Баржа")
+print("Введите через пробел количество доков, количество отсеков, 
+максимальное количество бочек на барже: ")
+N, K, P = map(int, input().split())
+if N <= 1:
+ print("Количество доков должно быть больше 1")
+if P >= 100000:
+ print("Максимальное количество бочек на барже не должно быть 
+больше 100000")
+# Вызываем функцию для обработки баржи
+14
+result = process_barge(N, K, P)
+# Выводим результат
+print("Максимальное количество бочек, которые одновременно пребывали 
+на барже:", result)
